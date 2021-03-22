@@ -1,16 +1,40 @@
+#Rasberry Pi Automated Railswitch Control
+#
+#By: Noel Caverly
+
 import RPi.GPIO as GPIO
+from RPIO import PWM
 import time
 
-#Constants
-FORWARD__PIN = 11
-BACKWARD_PIN = 12
+#Constants        # Pos Pin  -  Neg Pin
+FORWARD_PIN = 12  # 12       -  18
+BACKWARD_PIN = 13 # 13       -  19
+PEDAL_PIN = 5
+WARNING_PIN = 6
 
+INIT_FREQ = 50
+DUTY_CYCLE = 90
 
-GPIO.setmode(GPIO.BOARD)
+#INITIALIZE
 
-GPIO.setup(FORWARD__PIN, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(FORWARD_PIN, GPIO.OUT)
 GPIO.setup(BACKWARD_PIN, GPIO.OUT)
+GPIO.setup(PEDAL_PIN, GPIO.OUT)
+GPIO.setup(WARNING_PIN, GPIO.OUT)
 
+#Hardware PWM
+PWM0forward = GPIO.PWM(FORWARD_PIN, INIT_FREQ)
+PWM1Backwards = GPIO.PWM(FORWARD_PIN, INIT_FREQ)
+
+#Software PWM (RPIO Library)
+PWM2pedal = PWM.Servo()
+
+
+
+
+#TESTING
 Forward()
 
 time.sleep(3)
@@ -25,17 +49,23 @@ GPIO.cleanup()
 
 
 #IO Functions
+def setPin(state, pin):
+    if state:
+        GPIO.output(pin, GPIO.HIGH)
+    else:
+        GPIO.output(pin, GPIO.LOW)
+
 def setFWPin(state):
     if state:
-        GPIO.output(FORWARD__PIN, GPIO.HIGH)
+        PWM0forward.start(DUTY_CYCLE)
     else:
-        GPIO.output(FORWARD__PIN, GPIO.LOW)
+        PWM0forward.stop()
 
 def setBWPin(state):
     if state:
-        GPIO.output(BACKWARD_PIN, GPIO.HIGH)
+        PWM1Backwards.start(DUTY_CYCLE)
     else:
-        GPIO.output(BACKWARD_PIN, GPIO.LOW)
+        PWM1Backwards.stop()
 
 def Forward():
     setBWPin(0)
