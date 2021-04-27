@@ -5,6 +5,7 @@
 import gpiozero
 #from RPIO import PWM
 import time
+import controller
 
 #Constants 
 STEPPING_PIN = 18 #12 is linked
@@ -13,15 +14,23 @@ ACTIVE_PIN = 6
 PEDALFW_PIN = 14
 PEDALBW_PIN = 15
 WARNING_PIN = 23
+OVERRIDE_FW = 16
+OVERRIDE_BW = 26
 
 
 #INITIALIZE
+#Override
+dialFW = gpiozero.DigitalInputDevice(OVERRIDE_FW)
+dialBW = gpiozero.DigitalInputDevice(OVERRIDE_BW)
 
+dialFW.when_activated = lambda: controller.openSwitch
+dialBW.when_activated = lambda: controller.closeSwitch
 
 #PWM
 #switchMotor = gpiozero.PhaseEnableMotor(DIRECTION_PIN, STEPPING_PIN)
-pedal = gpiozero.Motor(PEDALFW_PIN, PEDALBW_PIN)
+#pedal = gpiozero.Motor(PEDALFW_PIN, PEDALBW_PIN)
 warningLED = gpiozero.LED(WARNING_PIN)
+pedalClk = gpiozero.DigitalOutputDevice(PEDALFW_PIN) 
 
 #PINS
 motorState = gpiozero.DigitalOutputDevice(ACTIVE_PIN)

@@ -5,6 +5,9 @@ import time
 TURN_STEPS = 200
 switchOpen = False
 
+def free():
+    return not IO.motorState.value
+        
 
 #Network Override Code
 def switchaction(message):
@@ -20,6 +23,9 @@ def switchaction(message):
 #Forward is Open, backwards is closed
 def closeSwitch():
     print("Closing switch...")
+    if not free():
+        print("Switch busy.")
+        return -1
     if (not switchOpen):
         print("Switch already closed.")
         return -1
@@ -30,6 +36,9 @@ def closeSwitch():
 
 def openSwitch():
     print("Opening switch...")
+    if not free():
+        print("Switch busy.")
+        return -1
     if (switchOpen):
         print("Switch already open.")
         return -1
@@ -56,6 +65,9 @@ def closePedal():
     IO.pedalStop()
 
 def reverseSwitch():
+    if not free():
+        print("Switch busy.")
+        return -1
     openPedal()
     turn = TURN_STEPS
     global switchOpen
