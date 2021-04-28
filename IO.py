@@ -30,7 +30,9 @@ dialBW.when_activated = lambda: controller.closeSwitch
 #switchMotor = gpiozero.PhaseEnableMotor(DIRECTION_PIN, STEPPING_PIN)
 #pedal = gpiozero.Motor(PEDALFW_PIN, PEDALBW_PIN)
 warningLED = gpiozero.LED(WARNING_PIN)
-pedalClk = gpiozero.DigitalOutputDevice(PEDALFW_PIN) 
+pedalClk = gpiozero.PWMLED(PEDALFW_PIN) 
+pedalClk.frequency = 50
+
 
 #PINS
 motorState = gpiozero.DigitalOutputDevice(ACTIVE_PIN)
@@ -74,13 +76,15 @@ def step(steps):
 #pedal
 
 def pedalForward():
-    pedal.forward()
+    pedalClk.value = .3
+    pedalClk.blink()
 
 def pedalBackward():
-    pedal.backward()
+    pedalClk.value = .7
+    pedalClk.blink()
 
 def pedalStop():
-    pedal.stop()
+    pedalClk.off()
 
 
 #Led
