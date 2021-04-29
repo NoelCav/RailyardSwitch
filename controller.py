@@ -54,15 +54,13 @@ def openPedal():
         IO.step(1)
     else:
         IO.step(-1)
-    IO.pedalForward()
-    time.sleep(2)
-    IO.pedalStop()
+    IO.pedalStep(30)
+
 
 
 def closePedal():
-    IO.pedalBackward()
-    time.sleep(2)
-    IO.pedalStop()
+    IO.pedalStep(-30)
+
 
 def reverseSwitch():
     if not free():

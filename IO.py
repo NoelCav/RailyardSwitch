@@ -11,8 +11,7 @@ import controller
 STEPPING_PIN = 18 #12 is linked
 DIRECTION_PIN = 13 
 ACTIVE_PIN = 6 
-PEDALFW_PIN = 14
-PEDALBW_PIN = 15
+PEDAL_PIN = 14
 WARNING_PIN = 23
 OVERRIDE_FW = 16
 OVERRIDE_BW = 26
@@ -30,8 +29,9 @@ dialBW.when_activated = lambda: controller.closeSwitch
 #switchMotor = gpiozero.PhaseEnableMotor(DIRECTION_PIN, STEPPING_PIN)
 #pedal = gpiozero.Motor(PEDALFW_PIN, PEDALBW_PIN)
 warningLED = gpiozero.LED(WARNING_PIN)
-pedalClk = gpiozero.PWMLED(PEDALFW_PIN) 
-pedalClk.frequency = 50
+#pedalClk = gpiozero.PWMLED(PEDAL_PIN) 
+#pedalClk.frequency = 50
+pedalClk = gpiozero.DigitalOutputDevice(PEDAL_PIN)
 
 
 #PINS
@@ -60,6 +60,20 @@ def step(steps):
     motorState.off()
 
 
+def pedalStep(steps):
+    pulse = .001
+    if steps < 0:
+        steps = -steps
+        pulse = .002
+    pause = .02 - pulse
+    while steps > 0:
+        pedalClk.on()
+        time.sleep(pulse)
+        pedalClk.off()
+        time.sleep(pause)
+        steps -= 1
+
+
 # def switchForward(speed=1):
 #     motorState.on()
 #     switchMotor.forward(speed)
@@ -75,16 +89,16 @@ def step(steps):
 
 #pedal
 
-def pedalForward():
-    pedalClk.value = .3
-    pedalClk.blink()
+# def pedalForward():
+#     pedalClk.value = .3
+#     pedalClk.blink()
 
-def pedalBackward():
-    pedalClk.value = .7
-    pedalClk.blink()
+# def pedalBackward():
+#     pedalClk.value = .7
+#     pedalClk.blink()
 
-def pedalStop():
-    pedalClk.off()
+# def pedalStop():
+#     pedalClk.off()
 
 
 #Led
